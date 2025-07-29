@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v3"
 	"github.com/wayan/mergeexp/git"
 	"github.com/wayan/mergeexp/gitdir"
-	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
+	"github.com/wayan/oc-mergexp-gl/cmd/flags"
 )
 
 func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {

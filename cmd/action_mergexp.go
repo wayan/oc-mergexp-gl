@@ -15,7 +15,7 @@ import (
 	"github.com/wayan/mergeexp/gitdir"
 	"github.com/wayan/mergeexp/gitlab"
 	"github.com/wayan/mergeexp/merger"
-	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
+	"github.com/wayan/oc-mergexp-gl/cmd/flags"
 )
 
 const branchExperimental = "experimental"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd"
+	"github.com/wayan/oc-mergexp-gl/cmd"
 )
 
 func main() {
