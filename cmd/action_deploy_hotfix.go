@@ -8,8 +8,9 @@ import (
 	"log/slog"
 
 	"github.com/urfave/cli/v3"
-	"github.com/wayan/oc-mergexp-gl/cmd/flags"
-	"github.com/wayan/oc-mergexp-gl/gitdir"
+	"github.com/wayan/mergeexp/git"
+	"github.com/wayan/mergeexp/gitdir"
+	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
 )
 
 func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
@@ -32,12 +33,12 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 
 	sshURL := cmd.String(flags.TargetProjectSSHURL)
 
-	shaMaster, err := gitLsRemote(gd, sshURL, "master")
+	shaMaster, err := git.LsRemote(gd, sshURL, "master")
 	if err != nil {
 		return err
 	}
 
-	tag, err := gitHighestVersionTag(gd, sshURL)
+	tag, err := git.HighestVersionTag(gd, sshURL)
 	if err != nil {
 		return err
 	}
@@ -45,37 +46,36 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 		return errors.New("missing highest tag")
 	}
 
-	fmt.Println(tag)
+	masterTagged := tag.SHA == shaMaster
+	if !masterTagged {
+		tag.Patch++
+	}
+	if err := gd.Command("git", "tag", "-f", tag.String(), shaMaster).Run(); err != nil {
+		// creating forcefully the local tag
+		return err
+	}
 
-	newTag := fmt.Sprintf("%d.%d.%d", tag.Major, tag.Minor, tag.Patch)
 	if tag.SHA == shaMaster {
-		fmt.Println("master has the highest version")
-		if err := gd.Command("git", "tag", "-f", newTag, shaMaster).Run(); err != nil {
-			return err
-		}
+		slog.Info("master has the highest version tag", "tag", tag.String())
 	} else {
-		newTag = fmt.Sprintf("%d.%d.%d", tag.Major, tag.Minor, tag.Patch+1)
-		fmt.Printf("master is not tagged ve use tag %s\n", newTag)
+		slog.Info("tagging master", "tag", tag.String())
 
-		if err := gd.Command("git", "fetch", sshURL, shaMaster).Run(); err != nil {
+		if err := gd.Command("git", "push", sshURL, tag.String()).Run(); err != nil {
 			return err
 		}
+	}
 
-		if err := gd.Command("git", "tag", "-f", newTag, shaMaster).Run(); err != nil {
-			return err
-		}
-
-		if err := gd.Command("git", "push", sshURL, newTag).Run(); err != nil {
-			return err
-		}
+	// fetching the tag
+	if gd.Command("git", "fetch", sshURL, shaMaster).Run(); err != nil {
+		return err
 	}
 
 	// pushing to production
 	prodURL := cmd.String(flags.ProductionURL)
-	if err := gd.Command("git", "push", prodURL, newTag).Run(); err != nil {
+	if err := gd.Command("git", "push", prodURL, tag.String()).Run(); err != nil {
 		return err
 	}
-	if err := gd.Command("git", "push", prodURL, shaMaster+":"+"refs/heads/xmaster").Run(); err != nil {
+	if err := gd.Command("git", "push", prodURL, shaMaster+":"+"refs/heads/master").Run(); err != nil {
 		return err
 	}
 

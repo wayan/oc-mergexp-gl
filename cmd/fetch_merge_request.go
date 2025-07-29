@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/wayan/oc-mergexp-gl/gitdir"
-	"github.com/wayan/oc-mergexp-gl/gitlab"
+	"github.com/wayan/mergeexp/gitdir"
+	"github.com/wayan/mergeexp/gitlab"
 )
 
 // fetches SHA for all MergeRequests

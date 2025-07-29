@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	cmd.Run(cmd.CliMergexp(cmd.OCP))
+	cmd.Run(cmd.CliDeployHotfix(cmd.Cow))
 }

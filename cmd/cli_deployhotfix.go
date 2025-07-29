@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v3"
-	"github.com/wayan/oc-mergexp-gl/cmd/flags"
+	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
 )
 
 func CliDeployHotfix(sys System) (*cli.Command, error) {
@@ -30,12 +30,12 @@ func CliDeployHotfix(sys System) (*cli.Command, error) {
 			Value:   ocpCowValue(sys, OCPTargetProjectSSHURL, CowTargetProjectSSHURL),
 			Sources: cli.EnvVars(varPrefix + "GITLAB_SSHURL"),
 		},
-		&cli.StringFlag{
-			Name:    flags.DeployKey,
-			Usage:   "Path to deploy key for GitLab",
-			Value:   findDefaultDeployKey(),
-			Sources: cli.EnvVars(varPrefix + "DEPLOY_KEY"),
-		},
+		//		&cli.StringFlag{
+		//			Name:    flags.DeployKey,
+		//			Usage:   "Path to deploy key for GitLab",
+		//			Value:   findDefaultDeployKey(),
+		//			Sources: cli.EnvVars(varPrefix + "DEPLOY_KEY"),
+		//		},
 		&cli.StringFlag{
 			Name:    flags.ProductionURL,
 			Usage:   "SSH URL to production environment",

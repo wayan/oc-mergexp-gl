@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/urfave/cli/v3"
-	"github.com/wayan/oc-mergexp-gl/cmd/flags"
+	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
 )
 
 // CliMergeexp returns

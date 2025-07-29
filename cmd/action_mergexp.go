@@ -12,10 +12,10 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/urfave/cli/v3"
-	"github.com/wayan/oc-mergexp-gl/cmd/flags"
-	"github.com/wayan/oc-mergexp-gl/gitdir"
-	"github.com/wayan/oc-mergexp-gl/gitlab"
-	"github.com/wayan/oc-mergexp-gl/merger"
+	"github.com/wayan/mergeexp/gitdir"
+	"github.com/wayan/mergeexp/gitlab"
+	"github.com/wayan/mergeexp/merger"
+	"gitlab.services.itc.st.sk/b2btmcz/ocpdevelopers/oc-mergexp-gl/cmd/flags"
 )
 
 const branchExperimental = "experimental"
