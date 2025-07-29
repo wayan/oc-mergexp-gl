@@ -18,8 +18,6 @@ import (
 	"github.com/wayan/oc-mergexp-gl/cmd/flags"
 )
 
-const branchExperimental = "experimental"
-
 func buildResty(cmd *cli.Command) (*resty.Client, error) {
 	rc := resty.New()
 	rc.SetBaseURL(cmd.String(flags.GitLabAPIURL))
@@ -42,6 +40,11 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 	if privateToken == "" {
 		return errors.New("no private token for access to GitLab REST API")
 	}
+	deployKey := cmd.String(flags.DeployKey)
+	if _, err := os.Stat(deployKey); errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("file %s with deployment key does not exist, either create it or set different name (see deploy-key option)", deployKey)
+	}
+
 	gd, err := gitdir.New(workdir)
 	if err != nil {
 		return err
@@ -88,13 +91,12 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	deployKey := cmd.String(flags.DeployKey)
 	gd.Env = append([]string{"GIT_SSH_COMMAND=ssh -i " + deployKey}, os.Environ()...)
 	if err := gd.Command("git", "fetch", sshURL, sha).Run(); err != nil {
 		return fmt.Errorf("fetching '%s' '%s' failed: %w", sshURL, sha, err)
 	}
 
-	if err := gd.StartBranch("experimental", sha); err != nil {
+	if err := gd.StartBranch(Experimental, sha); err != nil {
 		return err
 	}
 
@@ -117,18 +119,18 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 
 	// branch MUST be force pushed
 	slog.Info("push to GitLab", "url", sshURL)
-	if err := gd.Command("git", "push", "-f", sshURL, "experimental").Run(); err != nil {
+	if err := gd.Command("git", "push", "-f", sshURL, Experimental).Run(); err != nil {
 		return fmt.Errorf("push to GitLab failed: %w", err)
 	}
 
 	slog.Info("push to TEST1", "url", test1URL)
-	if err := gd.Command("git", "push", "-f", test1URL, "experimental").Run(); err != nil {
+	if err := gd.Command("git", "push", "-f", test1URL, Experimental+":"+Demo).Run(); err != nil {
 		return fmt.Errorf("push to TEST1 environment failed: %w", err)
 	}
 
 	if test2URL := cmd.String(flags.Test2URL); test2URL != "" {
 		slog.Info("push to TEST2", "url", test2URL)
-		if err := gd.Command("git", "push", "-f", test2URL, "experimental").Run(); err != nil {
+		if err := gd.Command("git", "push", "-f", test2URL, Experimental+":"+Demo).Run(); err != nil {
 			return fmt.Errorf("push to TEST2 environment failed: %w", err)
 		}
 	}
