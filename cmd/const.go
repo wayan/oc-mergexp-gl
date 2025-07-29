@@ -12,10 +12,9 @@ const (
 	OCPTest2URL  = "ocplus@rztvnode435.cz.tmo:~/deploy/git/OCP.git"
 	CowTest1URL  = "cowboy@rztvnode404.cz.tmo:~/deploy/git/Cow.git"
 
-	// OCPProdURL = "ocplus@app-ocp.cz.tmo:~/deploy/git/OCP.git"
 	OCPProdURL = "ocplus@app-ocp.cz.tmo:~/deploy/git/OCP.git"
 	CowProdURL = "cowboy@app-ocp.cz.tmo:~/deploy/git/Cow.git"
 
-	// test1URL = "ocplus@rztvnode404.cz.tmo:~/deploy/git/OCP.git"
-
+	OCPProductionBranch = "PRODUCTION"
+	CowProductionBranch = "PRODUCTION"
 )

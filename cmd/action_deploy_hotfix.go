@@ -71,11 +71,12 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	// pushing to production
-	prodURL := cmd.String(flags.ProductionURL)
-	if err := gd.Command("git", "push", prodURL, tag.String()).Run(); err != nil {
+	productionURL := cmd.String(flags.ProductionURL)
+	productionBranch := cmd.String(flags.ProductionBranch)
+	if err := gd.Command("git", "push", productionURL, tag.String()).Run(); err != nil {
 		return err
 	}
-	if err := gd.Command("git", "push", prodURL, shaMaster+":"+"refs/heads/master").Run(); err != nil {
+	if err := gd.Command("git", "push", productionURL, shaMaster+":"+"refs/heads/"+productionBranch).Run(); err != nil {
 		return err
 	}
 

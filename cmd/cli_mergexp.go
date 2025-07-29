@@ -77,7 +77,7 @@ func CliMergexp(sys System) (*cli.Command, error) {
 	}
 
 	return &cli.Command{
-		Version:        "0.1.0",
+		Version:        Version,
 		Name:           serviceName,
 		Usage:          "building and deploying experimental branch from GitLabl merge requests",
 		Flags:          flgs,

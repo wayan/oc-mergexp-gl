@@ -12,5 +12,6 @@ const (
 	DeployKey           = "deploy-key"
 	SkipMergeRequests   = "skip-merge-requests"
 	ProductionURL       = "production-url"
+	ProductionBranch    = "production-branch"
 	TargetProjectSSHURL = "target-project-ssh-url"
 )

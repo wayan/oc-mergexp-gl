@@ -30,24 +30,24 @@ func CliDeployHotfix(sys System) (*cli.Command, error) {
 			Value:   ocpCowValue(sys, OCPTargetProjectSSHURL, CowTargetProjectSSHURL),
 			Sources: cli.EnvVars(varPrefix + "GITLAB_SSHURL"),
 		},
-		//		&cli.StringFlag{
-		//			Name:    flags.DeployKey,
-		//			Usage:   "Path to deploy key for GitLab",
-		//			Value:   findDefaultDeployKey(),
-		//			Sources: cli.EnvVars(varPrefix + "DEPLOY_KEY"),
-		//		},
 		&cli.StringFlag{
 			Name:    flags.ProductionURL,
 			Usage:   "SSH URL to production environment",
 			Value:   ocpCowValue(sys, OCPProdURL, CowProdURL),
-			Sources: cli.EnvVars(varPrefix + "DEPLOY_KEY"),
+			Sources: cli.EnvVars(varPrefix + "PRODUCTION_URL"),
+		},
+		&cli.StringFlag{
+			Name:    flags.ProductionBranch,
+			Usage:   "branch on remote repo to push to",
+			Value:   ocpCowValue(sys, OCPProductionBranch, CowProductionBranch),
+			Sources: cli.EnvVars(varPrefix + "PRODUCTION_BRANCH"),
 		},
 	}
 
 	return &cli.Command{
-		Version:        "0.1.0",
+		Version:        Version,
 		Name:           serviceName,
-		Usage:          "building and deploying experimental branch from GitLabl merge requests",
+		Usage:          "bumping the tag and pushing the master branch from GitLab to production",
 		Flags:          flgs,
 		DefaultCommand: "build",
 		Action:         ActionDeployHotfix,
