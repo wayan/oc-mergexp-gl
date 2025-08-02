@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	cmd.Run(cmd.CliMergexp(cmd.Cow))
+	cmd.Run(cmd.Cow.CliMergexp())
 }

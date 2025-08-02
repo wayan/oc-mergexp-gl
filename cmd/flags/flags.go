@@ -14,4 +14,7 @@ const (
 	ProductionURL       = "production-url"
 	ProductionBranch    = "production-branch"
 	TargetProjectSSHURL = "target-project-ssh-url"
+
+	// branch which will be harmonized by merging master^2
+	DevelopBranch = "develop-branch"
 )

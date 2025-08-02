@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	cmd.Run(cmd.CliDeployHotfix(cmd.Cow))
+	cmd.Run(cmd.Cow.CliDeployHotfix())
 }

@@ -9,20 +9,20 @@ import (
 )
 
 // CliMergeexp returns
-func CliMergexp(sys System) (*cli.Command, error) {
+func (s System) CliMergexp() (*cli.Command, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, fmt.Errorf("error getting home directory: %v", err)
 	}
 
 	// building flags
-	varPrefix := ocpCowValue(sys, "OCP_MERGEXP_", "COW_MERGEXP_")
-	serviceName := ocpCowValue(sys, "ocp-mergexp-gl", "cow-mergexp-gl")
+	varPrefix := ocpCowValue(s, "OCP_MERGEXP_", "COW_MERGEXP_")
+	serviceName := ocpCowValue(s, "ocp-mergexp-gl", "cow-mergexp-gl")
 	flgs := []cli.Flag{
 		&cli.StringFlag{
 			Name:    flags.Workdir,
 			Usage:   "The directory with git repo where the branch is built.",
-			Value:   homeDir + ocpCowValue(sys, "/.ocp-mergexp", "/.cow-mergexp"),
+			Value:   homeDir + ocpCowValue(s, "/.ocp-mergexp", "/.cow-mergexp"),
 			Sources: cli.EnvVars(varPrefix + "DIR"),
 		},
 		&cli.StringFlag{
@@ -34,7 +34,7 @@ func CliMergexp(sys System) (*cli.Command, error) {
 		&cli.IntFlag{
 			Name:    flags.TargetProjectID,
 			Usage:   "The id of the main GitLab project",
-			Value:   ocpCowValue(sys, OCPTargetProjectID, CowTargetProjectID),
+			Value:   ocpCowValue(s, OCPTargetProjectID, CowTargetProjectID),
 			Sources: cli.EnvVars(varPrefix + "PROJECT_ID"),
 		},
 		&cli.StringFlag{
@@ -46,7 +46,7 @@ func CliMergexp(sys System) (*cli.Command, error) {
 		&cli.StringFlag{
 			Name:  flags.StartBranch,
 			Usage: "branch to start the building",
-			Value: ocpCowValue(sys, "develop", "master"),
+			Value: ocpCowValue(s, "develop", "master"),
 		},
 		&cli.IntSliceFlag{
 			Name:    flags.SkipMergeRequests,
@@ -62,11 +62,11 @@ func CliMergexp(sys System) (*cli.Command, error) {
 		&cli.StringFlag{
 			Name:  flags.Test1URL,
 			Usage: "URL of TEST1 environment",
-			Value: ocpCowValue(sys, OCPTest1URL, CowTest1URL),
+			Value: ocpCowValue(s, OCPTest1URL, CowTest1URL),
 		},
 	}
 
-	if sys == OCP {
+	if s == OCP {
 		flgs = append(flgs,
 			&cli.StringFlag{
 				Name:  flags.Test2URL,

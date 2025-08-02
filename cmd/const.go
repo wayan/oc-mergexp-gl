@@ -17,4 +17,10 @@ const (
 
 	OCPProductionBranch = "PRODUCTION"
 	CowProductionBranch = "PRODUCTION"
+
+	// branches (to be put as options)
+	Experimental = "experimental"
+	Demo         = "demo"
+	Develop      = "develop"
+	Master       = "master"
 )

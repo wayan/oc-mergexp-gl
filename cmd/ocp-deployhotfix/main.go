@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	cmd.Run(cmd.CliDeployHotfix(cmd.OCP))
+	cmd.Run(cmd.OCP.CliDeployHotfix())
 }
