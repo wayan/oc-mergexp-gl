@@ -138,7 +138,7 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 
 	if test2URL := cmd.String(flags.Test2URL); test2URL != "" {
 		slog.Info("push to TEST2", "url", test2URL)
-		if err := gd.Command("git", "push", "-f", test2URL, Experimental+":"+Demo).Run(); err != nil {
+		if err := gd.Command("git", "push", "-f", test2URL, Experimental+":"+DemoTest2).Run(); err != nil {
 			return fmt.Errorf("push to TEST2 environment failed: %w", err)
 		}
 	}

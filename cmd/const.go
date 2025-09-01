@@ -23,6 +23,7 @@ const (
 	// branches (to be put as options)
 	Experimental = "experimental"
 	Demo         = "demo"
+	DemoTest2    = "ng"
 	Develop      = "develop"
 	Master       = "master"
 )
