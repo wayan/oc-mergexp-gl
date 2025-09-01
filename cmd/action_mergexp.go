@@ -68,6 +68,7 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	if idsToSkip := cmd.IntSlice(flags.SkipMergeRequests); len(idsToSkip) > 0 {
+		slog.Info("skipping", "idsToSkip", idsToSkip)
 		skipped := func(mr gitlab.MergeRequest) bool {
 			for _, id := range idsToSkip {
 				if id == mr.ID {
@@ -91,7 +92,9 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
-	gd.Env = append([]string{"GIT_SSH_COMMAND=ssh -i " + deployKey}, os.Environ()...)
+	// GIT_SSH_COMMAND must be at the end of the settings
+	// when run go run the GIT_SSH_COMMAND is already set as GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes
+	gd.Env = append(os.Environ(), "GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes -i "+deployKey)
 	if err := gd.Command("git", "fetch", sshURL, sha).Run(); err != nil {
 		return fmt.Errorf("fetching '%s' '%s' failed: %w", sshURL, sha, err)
 	}
