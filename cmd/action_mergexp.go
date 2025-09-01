@@ -122,6 +122,9 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 
 	test1URL := cmd.String(flags.Test1URL)
 
+	// returning the environment back
+	gd.Env = os.Environ()
+
 	// branch MUST be force pushed
 	slog.Info("push to GitLab", "url", sshURL)
 	if err := gd.Command("git", "push", "-f", sshURL, Experimental).Run(); err != nil {
