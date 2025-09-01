@@ -9,7 +9,7 @@ func findDefaultDeployKey() string {
 		return ""
 	}
 
-	path := homeDir + "/.ssh/absbot_rsa"
+	path := homeDir + "/.ssh/" + OCPDeploymentKeyName
 	if _, err := os.Stat(path); err != nil {
 		return ""
 	}

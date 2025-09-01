@@ -18,6 +18,8 @@ const (
 	OCPProductionBranch = "PRODUCTION"
 	CowProductionBranch = "PRODUCTION"
 
+	OCPDeploymentKeyName = "tmcz_deployment_key"
+
 	// branches (to be put as options)
 	Experimental = "experimental"
 	Demo         = "demo"
