@@ -92,11 +92,13 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	// gdFetch is working dir with deploy key set
 	// GIT_SSH_COMMAND must be at the end of the settings
 	// when run go run the GIT_SSH_COMMAND is already set as GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes
-	gd.Env = append(os.Environ(), "GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes -i "+deployKey)
-	if err := gd.Command("git", "fetch", sshURL, sha).Run(); err != nil {
-		return fmt.Errorf("fetching '%s' '%s' failed: %w", sshURL, sha, err)
+	gdFetch, err := gitdir.New(workdir)
+	gdFetch.Env = append(os.Environ(), "GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes -i "+deployKey)
+	if err := fetchSHA(gdFetch, sshURL, sha); err != nil {
+		return err
 	}
 
 	if err := gd.StartExperimentalBranch(Experimental, sha); err != nil {
@@ -104,7 +106,7 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	for _, mr := range mrs {
-		if err := FetchMergeRequest(ctx, gc, gd, mr); err != nil {
+		if err := FetchMergeRequest(ctx, gc, gdFetch, mr); err != nil {
 			return fmt.Errorf("fetching merge request %d %s failed: %w", mr.ID, mr.Title, err)
 		}
 	}
@@ -120,10 +122,20 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("merge branches: %w", err)
 	}
 
-	test1URL := cmd.String(flags.Test1URL)
+	// trying to fetch of the last experimental for creation of final commit
+	shaExp, err := gc.BranchSHA(ctx, targetProjectID, Experimental)
+	if err != nil {
+		return err
+	}
+	if shaExp != "" {
+		if err := fetchSHA(gd, sshURL, shaExp); err != nil {
+			return err
+		}
+	}
 
-	// returning the environment back
-	gd.Env = os.Environ()
+	if err := MergexpFinalCommit(ctx, gd, shaExp); err != nil {
+		return fmt.Errorf("final commit: %w", err)
+	}
 
 	// branch MUST be force pushed
 	slog.Info("push to GitLab", "url", sshURL)
@@ -131,6 +143,7 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("push to GitLab failed: %w", err)
 	}
 
+	test1URL := cmd.String(flags.Test1URL)
 	slog.Info("push to TEST1", "url", test1URL)
 	if err := gd.Command("git", "push", "-f", test1URL, Experimental+":"+Demo).Run(); err != nil {
 		return fmt.Errorf("push to TEST1 environment failed: %w", err)

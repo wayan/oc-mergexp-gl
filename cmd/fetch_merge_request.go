@@ -22,12 +22,5 @@ func FetchMergeRequest(ctx context.Context, gc *gitlab.Client, wd *gitdir.Dir, m
 		return fmt.Errorf("fetching project %d: %w", mr.SourceProjectId, err)
 	}
 
-	if err := wd.Command("git", "fetch", sshURL, mr.Sha).Run(); err != nil {
-		return fmt.Errorf("fetching '%s' '%s' failed: %w", sshURL, mr.Sha, err)
-	}
-
-	if !wd.ShaExists(mr.Sha) {
-		return fmt.Errorf("SHA not available after fetch")
-	}
-	return nil
+	return fetchSHA(wd, sshURL, mr.Sha)
 }
