@@ -96,7 +96,7 @@ func ActionMergexp(ctx context.Context, cmd *cli.Command) error {
 	// GIT_SSH_COMMAND must be at the end of the settings
 	// when run go run the GIT_SSH_COMMAND is already set as GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes
 	gdFetch, err := gitdir.New(workdir)
-	gdFetch.Env = append(os.Environ(), "GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes -i "+deployKey)
+	gdFetch.Env = append(os.Environ(), "GIT_SSH_COMMAND=ssh -o ControlMaster=no -o BatchMode=yes -o IdentitiesOnly=yes -i "+deployKey)
 	if err := fetchSHA(gdFetch, sshURL, sha); err != nil {
 		return err
 	}
