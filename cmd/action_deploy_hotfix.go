@@ -39,6 +39,10 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 		return err
 	}
 
+	if err := fetchSHA(gd, sshURL, masterSHA); err != nil {
+		return err
+	}
+
 	tag, err := git.HighestVersionTag(gd, sshURL)
 	if err != nil {
 		return err
