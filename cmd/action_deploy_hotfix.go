@@ -16,13 +16,13 @@ import (
 )
 
 // deployHotfixReleaseMessage creates new empty commit with changes from previous release
-func deployHotfixReleaseMessage(gd *gitdir.Dir, newRelease, prevRelease string) (string, error) {
+func deployHotfixReleaseMessage(gd *gitdir.Dir, newRelease, prevRelease, newTag string) (string, error) {
 	cmd := gd.Command("git", "log", "--merges", `--pretty=format:%x00%h%x00%s%x00%B%x00`, prevRelease+".."+newRelease)
 	out, err := cmd.Output()
 	if err != nil {
 		return "", err
 	}
-	var result = fmt.Sprintf("Release %s\n\nChangelog:\n", newRelease)
+	var result = fmt.Sprintf("Release %s\n\nChangelog:\n", newTag)
 	for parts := strings.Split(string(out), "\x00"); len(parts) >= 4; parts = parts[4:] {
 		// index 0 is ignored it is either empty string or new line
 		if line := deployHotfixReleaseMessageLine(parts[1], parts[2], parts[3]); line != "" {
@@ -103,7 +103,9 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 			return err
 		}
 
-		msg, err := deployHotfixReleaseMessage(gd, masterSHA, tag.String())
+		prevRelease := tag.String()
+		tag.Patch++
+		msg, err := deployHotfixReleaseMessage(gd, masterSHA, prevRelease, tag.String())
 		if err != nil {
 			return err
 		}
@@ -122,7 +124,6 @@ func ActionDeployHotfix(ctx context.Context, cmd *cli.Command) error {
 		origMasterSHA := masterSHA
 		masterSHA = strings.TrimSpace(string(out))
 
-		tag.Patch++
 		slog.Info("tagging master", "tag", tag.String())
 		if err := gd.Command("git", "tag", "-f", tag.String(), masterSHA).Run(); err != nil {
 			// creating forcefully the local tag regardless it was bumped
