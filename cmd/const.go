@@ -4,8 +4,8 @@ const (
 	OCPTargetProjectID     = 6025
 	OCPTargetProjectSSHURL = "git@gitlab.services.itc.st.sk:b2btmcz/gts-ocp.git"
 
-	CowTargetProjectID     = 0
-	CowTargetProjectSSHURL = "unknown"
+	CowTargetProjectID     = 6029
+	CowTargetProjectSSHURL = "git@gitlab.services.itc.st.sk:b2btmcz/gts-cow.git"
 
 	GitLabAPIURL = "https://gitlab.services.itc.st.sk/api/v4/"
 	OCPTest1URL  = "ocplus@rztvnode404.cz.tmo:~/deploy/git/OCP.git"
